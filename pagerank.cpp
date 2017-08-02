@@ -28,7 +28,7 @@ int main(int argc, char * argv[]){
     int row1 = 6; int col1 = 6;
    
     Matrix<float> H(row1, col1, H_arr);
-    H.print();
+    // H.print();
 
     float R_arr[] = {0.2,
                      0.2,
@@ -39,14 +39,19 @@ int main(int argc, char * argv[]){
     int row2 = 6; int col2 = 1;
     
     Matrix<float> R(row2, col2, R_arr);
-    R.print();
+    // R.print();
 
     // basic way
     /*Matrix<float> res = H * R;
     res.print();*/
 
-    // parallel way
-    int partitions = 2;
+    // parallel way, should guarantee partitions <= row_size() and col_size() of H 
+    int partitions = 1;
+    int h_rows = H.row_size();
+    if(partitions > h_rows){
+        fprintf(stderr, "partition is over rows or cols range\n");
+    }
+    assert(partitions <= h_rows);
 
     Matrix<float> *res_buf;
     assert((res_buf = new Matrix<float>[partitions]) != NULL);
@@ -56,7 +61,6 @@ int main(int argc, char * argv[]){
     // initialize matrix res
     for(int r = 0; r < partitions; ++r){
         std::pair<int, int> row_rg = get_range(r, partitions, H.row_size()); 
-        printf("sub %d : range from %d to %d\n", r, row_rg.first, row_rg.second);
         res_buf[r].initialize(row_rg.second - row_rg.first, R.col_size()/*1*/, NULL);
     }
     // used to synchronize threads
@@ -79,7 +83,6 @@ int main(int argc, char * argv[]){
                     // using row range and col range, form two sub-matrix to multiply
                     int rows = fst_rows.second - fst_rows.first;
                     int cols = fst_cols.second - fst_cols.first;
-                    printf("rows is %d cols is %d\n", rows, cols);
                     Matrix<float> sub1(rows, cols);
                     // copy part of original matrix H
                     for(int i = fst_rows.first; i < fst_rows.second; ++i){
