@@ -120,6 +120,16 @@ public:
             }
         }
     }
+    void operator+=(const Matrix<T> &other){
+        // allow add itself
+        if(m != other.row_size() || n != other.col_size())return;
+        assert(m > 0 && n > 0 && data != NULL);
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                data[i][j] += other[i][j];
+            }
+        }
+    }
     void print(){
         for(int i = 0; i < m; ++i){
             for(int j = 0; j < n; ++j){
