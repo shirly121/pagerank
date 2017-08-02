@@ -5,7 +5,7 @@ int main(int argc, char * argv[]){
 
     float H_arr[] = {0, 0, 0.25, 0, 0,
                      1, 0, 0.25, 0, 0,
-                     0, 0, 0, 0.25, 0,
+                     0, 0, 0, 0.5, 0,
                      0, 0, 0.25, 0, 1,
                      0, 1, 0.25, 0.5, 0};
     // printf("%f\n", H_arr[2]);
@@ -43,9 +43,9 @@ int main(int argc, char * argv[]){
     Matrix<float> R(row2, col2, R_arr);
     R.print();
 
-    Matrix<float> a;
-    // Matrix<float> res = H * R;
-
+    // Matrix<float> a;
+    Matrix<float> res = H * R;
+    res.print();
 
     return 0;
 }

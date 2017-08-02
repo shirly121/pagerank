@@ -61,8 +61,12 @@ public:
         initialize(m, n, _data);
     }
     void clear(){
-        free(data[0].rdata);
-        delete[] data;
+        if(data != NULL && data[0].rdata != NULL){
+            free(data[0].rdata);
+        }
+        if(data){
+            delete[] data;
+        }
         data = NULL;
     }
     ~Matrix(){
